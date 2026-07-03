@@ -5,10 +5,16 @@ async function getJson(url, label) {
   const text = await res.text();
 
   let json;
-  try { json = text ? JSON.parse(text) : {}; }
-  catch { throw new Error(`${label}: non-JSON response: ${text.slice(0, 300)}`); }
+  try {
+    json = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`${label}: non-JSON response: ${text.slice(0, 300)}`);
+  }
 
-  if (!res.ok) throw new Error(`${label}: MLB ${res.status}: ${JSON.stringify(json).slice(0, 500)}`);
+  if (!res.ok) {
+    throw new Error(`${label}: MLB ${res.status}: ${JSON.stringify(json).slice(0, 500)}`);
+  }
+
   return json;
 }
 
@@ -28,6 +34,7 @@ export async function getTeamRoster(teamId) {
 
 export async function getPeople(ids) {
   if (!ids.length) return { people: [] };
+
   const url = new URL(`${MLB_BASE}/people`);
   url.searchParams.set('personIds', ids.join(','));
   url.searchParams.set('hydrate', 'currentTeam');
@@ -40,4 +47,8 @@ export async function getPlayerStats(playerId, season) {
   url.searchParams.set('group', 'hitting,pitching');
   url.searchParams.set('season', season);
   return getJson(url, `stats ${playerId}`);
+}
+
+export async function getBoxscore(gamePk) {
+  return getJson(`${MLB_BASE}/game/${gamePk}/boxscore`, `boxscore ${gamePk}`);
 }
