@@ -1,30 +1,5 @@
-function emoji(type) {
-  return {
-    birthday: '🎂',
-    milestone: '📈',
-    debut: '🧢',
-    promotion: '🎁',
-    family: '👨‍👩‍👧',
-    revenge: '🏠',
-    news: '📰',
-    manual: '📝'
-  }[type] || '⚾';
-}
-
-export function buildReport(alerts, maxChars) {
-  if (!alerts.length) return '⚾ **MLB Narrative Report**\n\nNo qualified narrative alerts today.';
-
-  const lines = ['⚾ **MLB Narrative Report**', ''];
-
-  for (const a of alerts) {
-    lines.push(`${emoji(a.type)} **${a.title}**`);
-    if (a.game) lines.push(`Game: ${a.game}`);
-    lines.push(`Score: ${a.score}`);
-    if (a.details) lines.push(a.details);
-    lines.push('');
-  }
-
-  let text = lines.join('\n').trim();
-  if (text.length > maxChars) text = text.slice(0, maxChars - 40).trim() + '\n\n…truncated';
-  return text;
-}
+function emoji(type){return{birthday:'🎂',milestone:'📈',debut:'🧢',promotion:'🎁',family:'👨‍👩‍👧',revenge:'🏠',news:'📰',manual:'📝',return:'🚑'}[type]||'⚾';}
+function alertLines(a){const lines=[];lines.push(`${emoji(a.type)} **${a.title}**`);if(a.playerName&&!a.title.includes(a.playerName))lines.push(`Player: ${a.playerName}`);lines.push(`Score: ${a.score}`);if(a.details)lines.push(a.details);return lines;}
+export function buildReport(result,maxChars){const{date,games,alerts,debug,topIntel}=result;const lines=[`⚾ **MLB Pregame Intel — ${date}**`,`Games: ${debug.games} | Alerts: ${alerts.length}`,''];if(topIntel?.length){lines.push('🔥 **League-Wide Intel**');for(const a of topIntel.slice(0,5)){lines.push(...alertLines(a));lines.push('');}}if(!games.length)lines.push('No MLB games found today.');for(const game of games){lines.push(`**${game.label}**`);if(!game.alerts.length){lines.push('No qualified intel found.');if(game.scannedPlayers?.length)lines.push(`Scanned: ${game.scannedPlayers.slice(0,6).join(', ')}${game.scannedPlayers.length>6?'...':''}`);lines.push('');continue;}for(const a of game.alerts.slice(0,5)){lines.push(...alertLines(a));lines.push('');}}
+lines.push(`_Debug: birthdays ${debug.birthdays}, milestones ${debug.milestones}, promos ${debug.promotions}, playerNews ${debug.playerNews}, leagueNews ${debug.leagueNews}, playerQueries ${debug.playerNewsQueries}, leagueQueries ${debug.leagueNewsQueries}, leagueResults ${debug.leagueNewsResults}._`);let text=lines.join('\n').trim();if(text.length>maxChars)text=text.slice(0,maxChars-40).trim()+'\n\n…truncated';return text;}
+export function buildDiscordPayload(result,maxChars){const promoEmbeds=result.alerts.filter(a=>a.type==='promotion'&&a.imageUrl).slice(0,5).map(a=>({title:`🎁 ${a.title}`.slice(0,256),url:a.sourceUrl||undefined,description:[a.game?`**Game:** ${a.game}`:'',a.playerName?`**Player:** ${a.playerName}`:'',`**Score:** ${a.score}`,a.details?a.details.slice(0,900):''].filter(Boolean).join('\n'),image:{url:a.imageUrl},footer:{text:a.teamName||'MLB promotion'}}));return{content:buildReport(result,maxChars),embeds:promoEmbeds};}

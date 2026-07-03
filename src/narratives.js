@@ -1,158 +1,23 @@
-import { getSchedule, getTeamRoster, getPeople, getPlayerStats } from './mlb.js';
+import { getSchedule,getTeamRoster,getPeople,getPlayerStats,getBoxscore } from './mlb.js';
 import { getManualNarratives } from './manual.js';
 import { getPromoNarratives } from './promotions.js';
-import { getNewsNarratives } from './newsSearch.js';
-import { todayLocalISO, mmdd } from './date.js';
-
-function gameLabel(game) {
-  const away = game.teams.away.team.abbreviation || game.teams.away.team.name;
-  const home = game.teams.home.team.abbreviation || game.teams.home.team.name;
-  return `${away} @ ${home}`;
-}
-
-function push(alerts, alert) {
-  if (!alert.playerName && !alert.title) return;
-  alerts.push(alert);
-}
-
-function getCareerStat(stats, key) {
-  const splits = stats?.stats?.find(s => s.type?.displayName === 'career')?.splits || [];
-  for (const s of splits) {
-    const stat = s.stat || {};
-    if (stat[key] !== undefined) return Number(stat[key]);
-  }
-  return null;
-}
-
-function milestoneChecks(player, stats, game) {
-  const out = [];
-  const hitting = {
-    homeRuns: [99, 149, 199, 249, 299, 349, 399, 449, 499],
-    hits: [999, 1499, 1999, 2499, 2999],
-    rbi: [499, 749, 999, 1199, 1499],
-    stolenBases: [49, 99, 149, 199, 299, 399]
-  };
-
-  for (const [key, targets] of Object.entries(hitting)) {
-    const val = getCareerStat(stats, key);
-    if (val === null) continue;
-
-    for (const target of targets) {
-      if (val === target) {
-        out.push({
-          type: 'milestone',
-          score: 22,
-          playerName: player.fullName,
-          teamName: player.currentTeam?.name,
-          game: gameLabel(game),
-          title: `${player.fullName} needs 1 ${key} for ${target + 1}`,
-          details: `Career ${key}: ${val}.`
-        });
-      }
-    }
-  }
-
-  return out;
-}
-
-function dedupeAlerts(alerts) {
-  const seen = new Set();
-  return alerts.filter(a => {
-    const key = `${a.type}|${a.playerName || ''}|${a.teamName || ''}|${a.title || ''}`.toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-export async function buildNarratives(config) {
-  const date = todayLocalISO(config.timezone);
-  const schedule = await getSchedule(date);
-  const games = schedule.dates?.[0]?.games || [];
-
-  const teamIds = new Set();
-  const gameTeams = [];
-  const gamesByTeamId = new Map();
-
-  for (const game of games) {
-    const label = gameLabel(game);
-    for (const side of ['away', 'home']) {
-      const team = game.teams[side].team;
-      teamIds.add(team.id);
-      const abbrev = team.abbreviation || team.name;
-      gameTeams.push({ id: team.id, abbrev, name: team.name, gameLabel: label });
-      gamesByTeamId.set(team.id, { label, game });
-    }
-  }
-
-  const rosterRows = [];
-  for (const teamId of teamIds) {
-    const roster = await getTeamRoster(teamId);
-    for (const r of roster.roster || []) {
-      rosterRows.push({ teamId, personId: r.person.id, playerName: r.person.fullName });
-    }
-  }
-
-  const people = await getPeople([...new Set(rosterRows.map(r => r.personId))]);
-  const peopleList = people.people || [];
-  const peopleById = new Map(peopleList.map(p => [p.id, p]));
-
-  const alerts = [];
-
-  for (const game of games) {
-    const gameTeamIds = [game.teams.away.team.id, game.teams.home.team.id];
-    const gamePlayers = rosterRows.filter(r => gameTeamIds.includes(r.teamId));
-
-    for (const row of gamePlayers) {
-      const p = peopleById.get(row.personId);
-      if (!p) continue;
-
-      if (mmdd(p.birthDate) === mmdd(date)) {
-        push(alerts, {
-          type: 'birthday',
-          score: 30,
-          playerName: p.fullName,
-          teamName: p.currentTeam?.name,
-          game: gameLabel(game),
-          title: `Birthday game: ${p.fullName}`,
-          details: `${p.fullName} was born on ${p.birthDate}.`
-        });
-      }
-
-      const stats = await getPlayerStats(p.id, config.season).catch(() => null);
-      for (const a of milestoneChecks(p, stats, game)) push(alerts, a);
-
-      if (p.mlbDebutDate && p.mlbDebutDate === date) {
-        push(alerts, {
-          type: 'debut',
-          score: 35,
-          playerName: p.fullName,
-          teamName: p.currentTeam?.name,
-          game: gameLabel(game),
-          title: `MLB debut: ${p.fullName}`,
-          details: `${p.fullName} is listed with MLB debut date ${p.mlbDebutDate}.`
-        });
-      }
-    }
-  }
-
-  for (const a of await getPromoNarratives({ date, gameTeams, config })) push(alerts, a);
-  for (const a of await getNewsNarratives({ players: peopleList, gamesByTeamId, config })) push(alerts, a);
-
-  const manual = await getManualNarratives(date);
-  for (const m of manual) {
-    push(alerts, {
-      type: m.type || 'manual',
-      score: Number(m.score || 25),
-      playerName: m.playerName,
-      teamName: m.teamAbbrev,
-      game: m.game || '',
-      title: m.title,
-      details: m.details || ''
-    });
-  }
-
-  return dedupeAlerts(alerts)
-    .filter(a => a.score >= config.minScore)
-    .sort((a, b) => b.score - a.score);
-}
+import { getNewsNarrativesForGame } from './newsSearch.js';
+import { getLeagueNewsIntel } from './leagueNews.js';
+import { todayLocalISO,mmdd } from './date.js';
+function gameLabel(game){const away=game.teams.away.team.abbreviation||game.teams.away.team.name;const home=game.teams.home.team.abbreviation||game.teams.home.team.name;return `${away} @ ${home}`;}
+function teamAbbrev(team){return team.abbreviation||team.name;}
+function getCareerStat(stats,key){const splits=stats?.stats?.find(s=>s.type?.displayName==='career')?.splits||[];for(const s of splits){if(s.stat?.[key]!==undefined)return Number(s.stat[key]);}return null;}
+function milestoneChecks(player,stats,game){const out=[];const hitting={homeRuns:[49,99,149,199,249,299,349,399,449,499],hits:[499,999,1499,1999,2499,2999],rbi:[499,749,999,1199,1499],stolenBases:[49,99,149,199,299,399]};for(const[key,targets]of Object.entries(hitting)){const val=getCareerStat(stats,key);if(val===null)continue;for(const target of targets){if(val===target)out.push({type:'milestone',score:22,playerName:player.fullName,teamName:player.currentTeam?.name,game:gameLabel(game),title:`${player.fullName} needs 1 ${key} for ${target+1}`,details:`Career ${key}: ${val}.`});}}return out;}
+function dedupeAlerts(alerts){const seen=new Set();return alerts.filter(a=>{const key=`${a.type}|${a.playerName||''}|${a.teamName||''}|${a.title||''}|${a.sourceUrl||''}`.toLowerCase();if(seen.has(key))return false;seen.add(key);return true;});}
+function extractBattingOrderIds(box){const ids=[];for(const side of['away','home'])for(const id of box?.teams?.[side]?.battingOrder||[])ids.push(Number(id));return ids.filter(Boolean);}
+function probablePitcherIds(game){return[game.teams?.away?.probablePitcher?.id,game.teams?.home?.probablePitcher?.id].filter(Boolean);}
+function getGameInfo(game){const away=game.teams.away.team,home=game.teams.home.team;return{gamePk:game.gamePk,label:gameLabel(game),awayTeamId:away.id,homeTeamId:home.id,awayAbbrev:teamAbbrev(away),homeAbbrev:teamAbbrev(home),awayName:away.name,homeName:home.name};}
+async function getGamePlayers({game,rosterRows,peopleById}){const info=getGameInfo(game);const ids=new Set();try{const box=await getBoxscore(game.gamePk);for(const id of extractBattingOrderIds(box))ids.add(id);}catch{}for(const id of probablePitcherIds(game))ids.add(id);const gameTeamIds=[info.awayTeamId,info.homeTeamId];for(const row of rosterRows.filter(r=>gameTeamIds.includes(r.teamId)))ids.add(row.personId);return[...ids].map(id=>peopleById.get(id)).filter(Boolean).map(p=>({...p,opponentName:p.currentTeam?.id===info.awayTeamId?info.homeName:info.awayName}));}
+export async function buildNarratives(config){const date=todayLocalISO(config.timezone);const schedule=await getSchedule(date);const games=schedule.dates?.[0]?.games||[];const debug={date,games:games.length,birthdays:0,milestones:0,debuts:0,promotions:0,playerNews:0,leagueNews:0,manual:0,playerNewsQueries:0,playerNewsResults:0,playerNewsScoredResults:0,leagueNewsQueries:0,leagueNewsResults:0,leagueNewsScoredResults:0,leagueNewsMatchedPlayers:0};const teamIds=new Set(),gameTeams=[],gamesByTeamId=new Map();for(const game of games){const info=getGameInfo(game);gamesByTeamId.set(info.awayTeamId,{label:info.label,game});gamesByTeamId.set(info.homeTeamId,{label:info.label,game});for(const side of['away','home']){const team=game.teams[side].team;teamIds.add(team.id);gameTeams.push({id:team.id,abbrev:teamAbbrev(team),name:team.name,gameLabel:info.label});}}
+const rosterRows=[];for(const teamId of teamIds){const roster=await getTeamRoster(teamId);for(const r of roster.roster||[])rosterRows.push({teamId,personId:r.person.id,playerName:r.person.fullName});}
+const people=await getPeople([...new Set(rosterRows.map(r=>r.personId))]);const peopleList=people.people||[];const peopleById=new Map(peopleList.map(p=>[p.id,p]));const reportGames=[],allAlerts=[];
+const leagueIntel=await getLeagueNewsIntel({allPlayers:peopleList,gamesByTeamId,config});debug.leagueNews=leagueIntel.alerts.length;debug.leagueNewsQueries=leagueIntel.counters.queries;debug.leagueNewsResults=leagueIntel.counters.results;debug.leagueNewsScoredResults=leagueIntel.counters.scoredResults;debug.leagueNewsMatchedPlayers=leagueIntel.counters.matchedPlayers;
+const promoAlerts=await getPromoNarratives({date,gameTeams,config});debug.promotions=promoAlerts.length;const alertsByGame=new Map();const addByGame=a=>{if(!a.game)return;if(!alertsByGame.has(a.game))alertsByGame.set(a.game,[]);alertsByGame.get(a.game).push(a);};for(const a of promoAlerts)addByGame(a);for(const a of leagueIntel.alerts)addByGame(a);const topIntel=leagueIntel.alerts.filter(a=>!a.game).slice(0,8);
+for(const game of games){const info=getGameInfo(game);const gameAlerts=[];const players=await getGamePlayers({game,rosterRows,peopleById});for(const p of players){if(mmdd(p.birthDate)===mmdd(date)){debug.birthdays++;gameAlerts.push({type:'birthday',score:30,playerName:p.fullName,teamName:p.currentTeam?.name,game:info.label,title:`Birthday game: ${p.fullName}`,details:`${p.fullName} was born on ${p.birthDate}.`});}const stats=await getPlayerStats(p.id,config.season).catch(()=>null);const milestones=milestoneChecks(p,stats,game);debug.milestones+=milestones.length;gameAlerts.push(...milestones);if(p.mlbDebutDate&&p.mlbDebutDate===date){debug.debuts++;gameAlerts.push({type:'debut',score:35,playerName:p.fullName,teamName:p.currentTeam?.name,game:info.label,title:`MLB debut: ${p.fullName}`,details:`${p.fullName} is listed with MLB debut date ${p.mlbDebutDate}.`});}}
+gameAlerts.push(...(alertsByGame.get(info.label)||[]));const newsPlayers=players.slice(0,config.maxPlayersToNewsScan||6);const newsResult=await getNewsNarrativesForGame({gameInfo:info,players:newsPlayers,config});debug.playerNews+=newsResult.alerts.length;debug.playerNewsQueries+=newsResult.counters.queries;debug.playerNewsResults+=newsResult.counters.results;debug.playerNewsScoredResults+=newsResult.counters.scoredResults;gameAlerts.push(...newsResult.alerts);const qualified=dedupeAlerts(gameAlerts).filter(a=>a.score>=config.minScore).sort((a,b)=>b.score-a.score);allAlerts.push(...qualified);if(qualified.length||config.includeEmptyGames)reportGames.push({label:info.label,alerts:qualified,scannedPlayers:newsPlayers.map(p=>p.fullName)});}
+const manual=await getManualNarratives(date);debug.manual=manual.length;for(const m of manual)allAlerts.push({type:m.type||'manual',score:Number(m.score||25),playerName:m.playerName,teamName:m.teamAbbrev,game:m.game||'',title:m.title,details:m.details||''});const finalAlerts=dedupeAlerts([...allAlerts,...topIntel]).filter(a=>a.score>=config.minScore).sort((a,b)=>b.score-a.score);return{date,games:reportGames,topIntel,alerts:finalAlerts,debug};}

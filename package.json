@@ -1,14 +1,1 @@
-{
-  "name": "mlb-narrative-alert-bot",
-  "version": "2.0.0",
-  "type": "module",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "run": "node src/index.js --once"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "node-cron": "^3.0.3"
-  }
-}
+{"name":"mlb-pregame-intel-bot","version":"5.0.0","type":"module","main":"src/index.js","scripts":{"start":"node src/index.js","run":"node src/index.js --once"},"dependencies":{"dotenv":"^16.4.5","node-cron":"^3.0.3"}}

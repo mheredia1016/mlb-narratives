@@ -1,53 +1,26 @@
-# MLB Narrative Alert Bot v2
+# MLB Pregame Intel Bot v6
 
-Automated MLB narrative alerts for Discord.
+v6 fixes stale SerpAPI/Google News results.
 
-## Covers
+## Changes
+- Rejects news older than `NEWS_LOOKBACK_HOURS`.
+- Adds `today` and today's date to searches.
+- Adds `Age: 4 hours ago` etc. in Discord details.
 
-- birthdays
-- milestone watch
-- MLB debuts
-- bobbleheads / giveaways / theme nights from MLB promo pages
-- automated player/team news narratives through SerpAPI
-- manual fallback notes
-
-## Railway
-
-1. Push repo to GitHub.
-2. Connect GitHub repo to Railway.
-3. Add variables from `.env.example`.
-4. Start command:
-
-```bash
-npm start
-```
-
-## Run once
-
-```bash
-npm install
-cp .env.example .env
-npm run run
-```
-
-## SerpAPI
-
-Add:
+## Recommended Railway vars
 
 ```env
-NEWS_PROVIDER=serpapi
-SERPAPI_KEY=your_key_here
-ENABLE_NEWS_NARRATIVES=true
+NEWS_LOOKBACK_HOURS=24
+ENABLE_LEAGUE_NEWS_SCAN=true
+ENABLE_MLB_COM_SEARCH=true
+NEWS_MAX_RESULTS_PER_QUERY=5
+MAX_PLAYERS_TO_NEWS_SCAN=6
+NEWS_SEARCHES_PER_PLAYER=3
+MAX_LEAGUE_NEWS_QUERIES=10
 ```
 
-Without SerpAPI, the bot still runs birthdays, milestones, debuts, promo scraping, and manual fallback.
+For stricter same-day only:
 
-## Promo scraping
-
-Promo URLs are stored in:
-
-```txt
-data/teams.json
+```env
+NEWS_LOOKBACK_HOURS=12
 ```
-
-You can add or replace promo page URLs anytime.
