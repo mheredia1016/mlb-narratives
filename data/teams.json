@@ -1,32 +1,182 @@
 [
-  { "abbrev": "ARI", "name": "Arizona Diamondbacks", "mlbSlug": "dbacks", "promoUrl": "https://www.mlb.com/dbacks/tickets/promotions" },
-  { "abbrev": "ATL", "name": "Atlanta Braves", "mlbSlug": "braves", "promoUrl": "https://www.mlb.com/braves/tickets/promotions" },
-  { "abbrev": "BAL", "name": "Baltimore Orioles", "mlbSlug": "orioles", "promoUrl": "https://www.mlb.com/orioles/tickets/promotions" },
-  { "abbrev": "BOS", "name": "Boston Red Sox", "mlbSlug": "redsox", "promoUrl": "https://www.mlb.com/redsox/tickets/promotions" },
-  { "abbrev": "CHC", "name": "Chicago Cubs", "mlbSlug": "cubs", "promoUrl": "https://www.mlb.com/cubs/tickets/promotions" },
-  { "abbrev": "CWS", "name": "Chicago White Sox", "mlbSlug": "whitesox", "promoUrl": "https://www.mlb.com/whitesox/tickets/promotions" },
-  { "abbrev": "CIN", "name": "Cincinnati Reds", "mlbSlug": "reds", "promoUrl": "https://www.mlb.com/reds/tickets/promotions" },
-  { "abbrev": "CLE", "name": "Cleveland Guardians", "mlbSlug": "guardians", "promoUrl": "https://www.mlb.com/guardians/tickets/promotions" },
-  { "abbrev": "COL", "name": "Colorado Rockies", "mlbSlug": "rockies", "promoUrl": "https://www.mlb.com/rockies/tickets/promotions" },
-  { "abbrev": "DET", "name": "Detroit Tigers", "mlbSlug": "tigers", "promoUrl": "https://www.mlb.com/tigers/tickets/promotions" },
-  { "abbrev": "HOU", "name": "Houston Astros", "mlbSlug": "astros", "promoUrl": "https://www.mlb.com/astros/tickets/promotions" },
-  { "abbrev": "KC", "name": "Kansas City Royals", "mlbSlug": "royals", "promoUrl": "https://www.mlb.com/royals/tickets/promotions" },
-  { "abbrev": "LAA", "name": "Los Angeles Angels", "mlbSlug": "angels", "promoUrl": "https://www.mlb.com/angels/tickets/promotions" },
-  { "abbrev": "LAD", "name": "Los Angeles Dodgers", "mlbSlug": "dodgers", "promoUrl": "https://www.mlb.com/dodgers/tickets/promotions" },
-  { "abbrev": "MIA", "name": "Miami Marlins", "mlbSlug": "marlins", "promoUrl": "https://www.mlb.com/marlins/tickets/promotions" },
-  { "abbrev": "MIL", "name": "Milwaukee Brewers", "mlbSlug": "brewers", "promoUrl": "https://www.mlb.com/brewers/tickets/promotions" },
-  { "abbrev": "MIN", "name": "Minnesota Twins", "mlbSlug": "twins", "promoUrl": "https://www.mlb.com/twins/tickets/promotions" },
-  { "abbrev": "NYM", "name": "New York Mets", "mlbSlug": "mets", "promoUrl": "https://www.mlb.com/mets/tickets/promotions" },
-  { "abbrev": "NYY", "name": "New York Yankees", "mlbSlug": "yankees", "promoUrl": "https://www.mlb.com/yankees/tickets/promotions" },
-  { "abbrev": "ATH", "name": "Athletics", "mlbSlug": "athletics", "promoUrl": "https://www.mlb.com/athletics/tickets/promotions" },
-  { "abbrev": "PHI", "name": "Philadelphia Phillies", "mlbSlug": "phillies", "promoUrl": "https://www.mlb.com/phillies/tickets/promotions" },
-  { "abbrev": "PIT", "name": "Pittsburgh Pirates", "mlbSlug": "pirates", "promoUrl": "https://www.mlb.com/pirates/tickets/promotions" },
-  { "abbrev": "SD", "name": "San Diego Padres", "mlbSlug": "padres", "promoUrl": "https://www.mlb.com/padres/tickets/promotions" },
-  { "abbrev": "SF", "name": "San Francisco Giants", "mlbSlug": "giants", "promoUrl": "https://www.mlb.com/giants/tickets/promotions" },
-  { "abbrev": "SEA", "name": "Seattle Mariners", "mlbSlug": "mariners", "promoUrl": "https://www.mlb.com/mariners/tickets/promotions" },
-  { "abbrev": "STL", "name": "St. Louis Cardinals", "mlbSlug": "cardinals", "promoUrl": "https://www.mlb.com/cardinals/tickets/promotions" },
-  { "abbrev": "TB", "name": "Tampa Bay Rays", "mlbSlug": "rays", "promoUrl": "https://www.mlb.com/rays/tickets/promotions" },
-  { "abbrev": "TEX", "name": "Texas Rangers", "mlbSlug": "rangers", "promoUrl": "https://www.mlb.com/rangers/tickets/promotions" },
-  { "abbrev": "TOR", "name": "Toronto Blue Jays", "mlbSlug": "bluejays", "promoUrl": "https://www.mlb.com/bluejays/tickets/promotions" },
-  { "abbrev": "WSH", "name": "Washington Nationals", "mlbSlug": "nationals", "promoUrl": "https://www.mlb.com/nationals/tickets/promotions" }
+  {
+    "id": 109,
+    "abbrev": "ARI",
+    "name": "Arizona Diamondbacks",
+    "slug": "dbacks"
+  },
+  {
+    "id": 144,
+    "abbrev": "ATL",
+    "name": "Atlanta Braves",
+    "slug": "braves"
+  },
+  {
+    "id": 110,
+    "abbrev": "BAL",
+    "name": "Baltimore Orioles",
+    "slug": "orioles"
+  },
+  {
+    "id": 111,
+    "abbrev": "BOS",
+    "name": "Boston Red Sox",
+    "slug": "redsox"
+  },
+  {
+    "id": 112,
+    "abbrev": "CHC",
+    "name": "Chicago Cubs",
+    "slug": "cubs"
+  },
+  {
+    "id": 145,
+    "abbrev": "CWS",
+    "name": "Chicago White Sox",
+    "slug": "whitesox"
+  },
+  {
+    "id": 113,
+    "abbrev": "CIN",
+    "name": "Cincinnati Reds",
+    "slug": "reds"
+  },
+  {
+    "id": 114,
+    "abbrev": "CLE",
+    "name": "Cleveland Guardians",
+    "slug": "guardians"
+  },
+  {
+    "id": 115,
+    "abbrev": "COL",
+    "name": "Colorado Rockies",
+    "slug": "rockies"
+  },
+  {
+    "id": 116,
+    "abbrev": "DET",
+    "name": "Detroit Tigers",
+    "slug": "tigers"
+  },
+  {
+    "id": 117,
+    "abbrev": "HOU",
+    "name": "Houston Astros",
+    "slug": "astros"
+  },
+  {
+    "id": 118,
+    "abbrev": "KC",
+    "name": "Kansas City Royals",
+    "slug": "royals"
+  },
+  {
+    "id": 108,
+    "abbrev": "LAA",
+    "name": "Los Angeles Angels",
+    "slug": "angels"
+  },
+  {
+    "id": 119,
+    "abbrev": "LAD",
+    "name": "Los Angeles Dodgers",
+    "slug": "dodgers"
+  },
+  {
+    "id": 146,
+    "abbrev": "MIA",
+    "name": "Miami Marlins",
+    "slug": "marlins"
+  },
+  {
+    "id": 158,
+    "abbrev": "MIL",
+    "name": "Milwaukee Brewers",
+    "slug": "brewers"
+  },
+  {
+    "id": 142,
+    "abbrev": "MIN",
+    "name": "Minnesota Twins",
+    "slug": "twins"
+  },
+  {
+    "id": 121,
+    "abbrev": "NYM",
+    "name": "New York Mets",
+    "slug": "mets"
+  },
+  {
+    "id": 147,
+    "abbrev": "NYY",
+    "name": "New York Yankees",
+    "slug": "yankees"
+  },
+  {
+    "id": 133,
+    "abbrev": "ATH",
+    "name": "Athletics",
+    "slug": "athletics"
+  },
+  {
+    "id": 143,
+    "abbrev": "PHI",
+    "name": "Philadelphia Phillies",
+    "slug": "phillies"
+  },
+  {
+    "id": 134,
+    "abbrev": "PIT",
+    "name": "Pittsburgh Pirates",
+    "slug": "pirates"
+  },
+  {
+    "id": 135,
+    "abbrev": "SD",
+    "name": "San Diego Padres",
+    "slug": "padres"
+  },
+  {
+    "id": 137,
+    "abbrev": "SF",
+    "name": "San Francisco Giants",
+    "slug": "giants"
+  },
+  {
+    "id": 136,
+    "abbrev": "SEA",
+    "name": "Seattle Mariners",
+    "slug": "mariners"
+  },
+  {
+    "id": 138,
+    "abbrev": "STL",
+    "name": "St. Louis Cardinals",
+    "slug": "cardinals"
+  },
+  {
+    "id": 139,
+    "abbrev": "TB",
+    "name": "Tampa Bay Rays",
+    "slug": "rays"
+  },
+  {
+    "id": 140,
+    "abbrev": "TEX",
+    "name": "Texas Rangers",
+    "slug": "rangers"
+  },
+  {
+    "id": 141,
+    "abbrev": "TOR",
+    "name": "Toronto Blue Jays",
+    "slug": "bluejays"
+  },
+  {
+    "id": 120,
+    "abbrev": "WSH",
+    "name": "Washington Nationals",
+    "slug": "nationals"
+  }
 ]

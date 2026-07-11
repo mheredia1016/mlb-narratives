@@ -1,13 +1,1 @@
-export async function postDiscord(webhookUrl, content) {
-  if (!webhookUrl) throw new Error('Missing DISCORD_WEBHOOK_URL');
-
-  const res = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ content })
-  });
-
-  const text = await res.text();
-  if (!res.ok) throw new Error(`Discord ${res.status}: ${text.slice(0, 500)}`);
-  return true;
-}
+export async function postDiscord(url,messages,embeds=[]){if(!url)throw new Error('Missing DISCORD_WEBHOOK_URL');for(let i=0;i<messages.length;i++){const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({content:messages[i],embeds:i===0?embeds:[]})});const t=await r.text();if(!r.ok)throw new Error(`Discord HTTP ${r.status}: ${t.slice(0,400)}`);}}

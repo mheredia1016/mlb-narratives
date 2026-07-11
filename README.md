@@ -1,26 +1,39 @@
-# MLB Pregame Intel Bot v6
+# MLB Pregame Intel — Free v7
 
-v6 fixes stale SerpAPI/Google News results.
+No SerpAPI, NewsAPI, or paid key. Uses MLB Stats API, MLB league/team RSS feeds, MLB team news pages as fallback, official transactions, and promotion pages.
 
-## Changes
-- Rejects news older than `NEWS_LOOKBACK_HOURS`.
-- Adds `today` and today's date to searches.
-- Adds `Age: 4 hours ago` etc. in Discord details.
+## GitHub
+1. Create a new repository.
+2. Upload every file/folder from this ZIP.
+3. Commit. Do not upload a real `.env`.
 
-## Recommended Railway vars
-
+## Railway variables
 ```env
-NEWS_LOOKBACK_HOURS=24
-ENABLE_LEAGUE_NEWS_SCAN=true
-ENABLE_MLB_COM_SEARCH=true
-NEWS_MAX_RESULTS_PER_QUERY=5
-MAX_PLAYERS_TO_NEWS_SCAN=6
-NEWS_SEARCHES_PER_PLAYER=3
-MAX_LEAGUE_NEWS_QUERIES=10
+DISCORD_WEBHOOK_URL=YOUR_WEBHOOK
+TIMEZONE=America/Chicago
+POST_CRON=0 10 * * *
+RUN_ON_START=true
+MLB_SEASON=2026
+NEWS_LOOKBACK_HOURS=36
+MIN_INTEL_SCORE=25
+MAX_ARTICLES_PER_FEED=20
+MAX_DISCORD_MESSAGES=8
+ENABLE_MLB_NEWS=true
+ENABLE_TEAM_NEWS=true
+ENABLE_TRANSACTIONS=true
+ENABLE_PROMOTIONS=true
+ENABLE_BIRTHDAYS=true
+ENABLE_MILESTONES=true
+ALWAYS_POST_REPORT=true
 ```
 
-For stricter same-day only:
+Railway runs `npm start`. For one immediate run, use `npm run run`.
 
-```env
-NEWS_LOOKBACK_HOURS=12
-```
+## Add phrases
+Edit `data/keywords.json`. The score must meet `MIN_INTEL_SCORE`.
+
+## Logs
+Shows games, players, birthdays, milestones, transactions, promotions, feeds, articles, fresh articles, and scored articles.
+
+## Limitation
+Family-attendance items only appear when MLB or a team publishes them in its feed/news page.
